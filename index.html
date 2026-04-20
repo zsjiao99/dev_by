@@ -10,7 +10,7 @@
   <div class="max-w-lg mx-auto">
     <!-- 头部 -->
     <div class="text-center mb-8">
-      <h1 class="text-2xl font-bold text-gray-800 mb-2">🏢 白云写字楼预约带看</h1>
+      <h1 class="text-2xl font-bold text-gray-800 mb-2">🏢 北京写字楼预约带看</h1>
       <p class="text-gray-500 text-sm">填写信息，30分钟内专属顾问联系您</p>
     </div>
 
@@ -33,12 +33,22 @@
 
           <!-- 电话 -->
           <div>
-            <label class="block text-sm text-gray-600 mb-1">联系电话 <span class="text-red-500">*</span></label>
+            <label class="block text-sm text-gray-600 mb-1">联系电话</label>
             <input 
               type="tel" 
               id="phone" 
-              placeholder="请输入手机号"
-              required
+              placeholder="请输入手机号（选填，和微信二选一）"
+              class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+          </div>
+
+          <!-- 微信号 -->
+          <div>
+            <label class="block text-sm text-gray-600 mb-1">微信号</label>
+            <input 
+              type="text" 
+              id="wechat" 
+              placeholder="请输入微信号（选填，和电话二选一）"
               class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
           </div>
@@ -51,12 +61,11 @@
               class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">请选择面积</option>
-              <option value="50平以下">50平以下</option>
-              <option value="50-100平">50-100平</option>
-              <option value="100-200平">100-200平</option>
-              <option value="200-300平">200-300平</option>
-              <option value="300-500平">300-500平</option>
-              <option value="500平以上">500平以上</option>
+              <option value="200平以下">200平以下</option>
+              <option value="200-500平">200-500平</option>
+              <option value="500-1000平">500-1000平</option>
+              <option value="1000-2000平">1000-2000平</option>
+              <option value="2000平以上">2000平以上</option>
             </select>
           </div>
 
@@ -139,13 +148,15 @@
               class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="">请选择意向区域</option>
-              <option value="天河区">天河区</option>
-              <option value="越秀区">越秀区</option>
-              <option value="海珠区">海珠区</option>
-              <option value="白云区">白云区</option>
-              <option value="番禺区">番禺区</option>
-              <option value="黄埔区">黄埔区</option>
-              <option value="其他区域">其他区域</option>
+              <option value="北京-朝阳区">北京-朝阳区</option>
+              <option value="北京-海淀区">北京-海淀区</option>
+              <option value="北京-东城区">北京-东城区</option>
+              <option value="北京-西城区">北京-西城区</option>
+              <option value="北京-丰台区">北京-丰台区</option>
+              <option value="北京-通州区">北京-通州区</option>
+              <option value="北京-大兴区">北京-大兴区</option>
+              <option value="北京-亦庄开发区">北京-亦庄开发区</option>
+              <option value="北京-其他区域">北京-其他区域</option>
             </select>
           </div>
 
@@ -176,6 +187,7 @@
       
       const name = document.getElementById('name').value;
       const phone = document.getElementById('phone').value;
+      const wechat = document.getElementById('wechat').value;
       const area = document.getElementById('area').value;
       const workstations = document.getElementById('workstations').value;
       const partitions = document.getElementById('partitions').value;
@@ -183,9 +195,16 @@
       const reason = document.getElementById('reason').value;
       const region = document.getElementById('region').value;
 
+      // 二选一验证
+      if (!phone && !wechat) {
+        alert('请至少填写联系电话或微信号其中一项');
+        return;
+      }
+
       const leadData = {
         name,
         phone,
+        wechat,
         area,
         workstations,
         partitions,
@@ -198,7 +217,8 @@
       console.log('🔥 新客户:', leadData);
 
       // ✅ 用图片方式发送，GET请求，100%成功，无跨域问题！
-      const text = `新客户：${leadData.name} - ${leadData.phone}\n业态：${leadData.businessType || '未填写'}\n面积：${leadData.area || '未填写'}\n工位：${leadData.workstations || '未填写'}\n隔断：${leadData.partitions || '未填写'}\n换房原因：${leadData.reason || '未填写'}\n区域：${leadData.region || '未填写'}\n时间：${leadData.time}`;
+      const contact = leadData.phone || `微信：${leadData.wechat}`;
+      const text = `新客户：${leadData.name}\n联系方式：${contact}\n业态：${leadData.businessType || '未填写'}\n面积：${leadData.area || '未填写'}\n工位：${leadData.workstations || '未填写'}\n隔断：${leadData.partitions || '未填写'}\n换房原因：${leadData.reason || '未填写'}\n区域：${leadData.region || '未填写'}\n时间：${leadData.time}`;
       
       const img = new Image();
       img.src = `https://sctapi.ftqq.com/${SENDKEY}.send?title=🏢新客户预约&desp=${encodeURIComponent(text)}`;
